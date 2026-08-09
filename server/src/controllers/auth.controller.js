@@ -1,4 +1,5 @@
 const User = require("../models/user.model");
+const jwt = require("jsonwebtoken")
 const { generateAccessToken,
   generateRefreshToken } = require("../utils/token");
 
@@ -98,9 +99,9 @@ const loginUser = async (req, res) => {
     };
 
     res.cookie("accessToken", accessToken, {
-        ...cookieOptions,
-        maxAge: 15 * 60 * 1000, // 15 minutes
-      })
+      ...cookieOptions,
+      maxAge: 15 * 60 * 1000, // 15 minutes
+    })
       .cookie("refreshToken", refreshToken, {
         ...cookieOptions,
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
@@ -132,34 +133,111 @@ const logoutUser = async (req, res) => {
       secure: false,
       sameSite: "lax",
     })
-    .clearCookie("refreshToken", {
-      httpOnly: true,
-      secure: false,
-      sameSite: "lax",
-    })
-    .status(200)
-    .json({
-      success: true,
-      message: "Logged out successfully",
-    });
+      .clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+      })
+      .status(200)
+      .json({
+        success: true,
+        message: "Logged out successfully",
+      });
   } catch (error) {
     console.error(error);
-    
+
     res.status(500).json({
       success: false,
       message: "Internal Server Error",
     });
   }
 };
-const getMe=async (req,res)=>{
+const getMe = async (req, res) => {
   res.status(200).json({
     success: true,
     user: req.user,
   });
 };
+const refreshAccessToken = async (req, res) => {
+  try {
+    const refreshToken = req.cookies.refreshToken;
+
+    if (!refreshToken) {
+      return res.status(401).json({
+        success: false,
+        message: "Refresh token not found",
+      });
+    }
+
+    const decoded = jwt.verify(
+      refreshToken,
+      process.env.JWT_REFRESH_SECRET
+    );
+
+    const user = await User.findById(decoded.userId);
+    console.log(user)
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const newAccessToken = generateAccessToken(user._id);
+
+    res.cookie("accessToken", newAccessToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+        maxAge: 15 * 60 * 1000,
+      })
+      .status(200)
+      .json({
+        success: true,
+        message: "Access token refreshed successfully",
+      });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(401).json({
+      success: false,
+      message: "Invalid or expired refresh token",
+    });
+  }
+};
+
+const googleCallback = async (req, res) => {
+  try {
+    const accessToken = generateAccessToken(req.user._id);
+    const refreshToken = generateRefreshToken(req.user._id);
+
+    res.cookie("accessToken", accessToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+        maxAge: 15 * 60 * 1000,
+      })
+      .cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      })
+      .redirect(process.env.CLIENT_URL);
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: "Google authentication failed",
+    });
+  }
+};
 module.exports = {
   registerUser,
   loginUser,
   getMe,
-  logoutUser
+  logoutUser,
+  refreshAccessToken,
+  googleCallback
 };
