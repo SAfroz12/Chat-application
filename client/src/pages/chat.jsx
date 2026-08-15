@@ -1,6 +1,6 @@
 import { useEffect,useState } from "react";
 import { useDispatch, useSelector } from "react-redux"
-import { fetchConversations } from "../store/conversationSlice";
+import { fetchConversations ,fetchConversation} from "../store/conversationSlice";
 import { fetchMessages, } from "../store/messageSlice";
 function Chat() {
   const dispatch = useDispatch();

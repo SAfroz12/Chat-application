@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-import { getMyConversations, createConversation } from "../services/conversationService";
+import { getMyConversations, createConversation, getConversation }
+    from "../services/conversationService";
 //get conversation
 export const fetchConversations = createAsyncThunk(
     "conversation/fetchConversations",
@@ -39,6 +40,23 @@ export const createNewConversation =
             }
         }
     );
+//get single conversation
+export const fetchConversation =
+    createAsyncThunk("conversation/fetchConversation",
+        async (conversationId, { rejectWithValue }) => {
+            try {
+                const conversation =
+                    await getConversation(conversationId);
+
+                return conversation;
+            } catch (error) {
+                return rejectWithValue(
+                    error.response?.data?.message ||
+                    "Failed to fetch conversation"
+                );
+            }
+        }
+    );
 
 const conversationSlice = createSlice({
     name: "conversation",
@@ -46,9 +64,12 @@ const conversationSlice = createSlice({
     initialState: {
         conversations: [],
         loading: false,
+        selectedConversation: null,
         error: null,
         creating: false,
         createError: null,
+        conversationLoading: false,
+        conversationError: null,
     },
 
     reducers: {},
@@ -96,7 +117,7 @@ const conversationSlice = createSlice({
                     );
                 }
             )
-
+            //single conversation
             .addCase(
                 createNewConversation.rejected,
                 (state, action) => {
@@ -104,7 +125,31 @@ const conversationSlice = createSlice({
                     state.createError =
                         action.payload;
                 }
-            );
+            ).addCase(
+                fetchConversation.pending,
+                (state) => {
+                    state.conversationLoading = true;
+                    state.conversationError = null;
+                }
+            )
+
+            .addCase(
+                fetchConversation.fulfilled,
+                (state, action) => {
+                    state.conversationLoading = false;
+                    state.selectedConversation =
+                        action.payload;
+                }
+            )
+
+            .addCase(
+                fetchConversation.rejected,
+                (state, action) => {
+                    state.conversationLoading = false;
+                    state.conversationError =
+                        action.payload;
+                }
+            )
     },
 });
 

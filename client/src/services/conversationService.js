@@ -15,3 +15,7 @@ export const createConversation = async (userId) => {
   console.log(response.data.conversation)
   return response.data.conversation;
 };
+export const getConversation = async (conversationId) => {
+  const response = await api.get(`/conversations/${conversationId}`);
+  return response.data.conversation;
+};
