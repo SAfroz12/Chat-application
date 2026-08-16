@@ -7,7 +7,6 @@ const PORT = process.env.PORT || 5000;
 
 // Create HTTP Server
 const server = http.createServer(app);
-
 // Connect Database
 connectDB();
 

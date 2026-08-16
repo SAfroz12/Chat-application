@@ -1,6 +1,6 @@
 const { Server } = require("socket.io");
 const { generateSmartReplies, } = require("../services/mistral.service");
-const cookie = require("cookie");
+const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const Conversation = require("../models/conversation.model")
 const Message = require("../models/message.model")
@@ -26,9 +26,13 @@ const initializeSocket = (server) => {
         return next(new Error("Authentication required"));
       }
 
-      const parsedCookies = cookie.parse(cookies);
-
-      const accessToken = parsedCookies.accessToken;
+     const accessToken = cookies
+      .split(";")
+      .map((cookie) => cookie.trim())
+      .find((cookie) =>
+        cookie.startsWith("accessToken=")
+      )
+      ?.split("=")[1];
 
       if (!accessToken) {
         return next(new Error("Access token not found"));

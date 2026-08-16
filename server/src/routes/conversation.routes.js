@@ -6,7 +6,7 @@ const {
 } = require("../controllers/conversation.controller");
 const protectMiddleware = require("../middlewares/auth.middleware");
 const router = express.Router();
-router.post("/",protectMiddleware,createConversation);
+router.post("/createConversation",protectMiddleware,createConversation);
 router.get("/",protectMiddleware,getMyConversations);
 router.get("/:conversationId",protectMiddleware,getConversation);
 
