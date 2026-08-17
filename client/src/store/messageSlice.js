@@ -1,17 +1,16 @@
-import {createSlice,createAsyncThunk,} from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, } from "@reduxjs/toolkit";
 
 import { getMessages } from "../services/messageService";
 export const fetchMessages = createAsyncThunk(
   "message/fetchMessages",
   async (conversationId, { rejectWithValue }) => {
     try {
-      const messages =
-        await getMessages(conversationId);
+      const messages = await getMessages(conversationId);
       return messages;
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message ||
-          "Failed to fetch messages"
+        "Failed to fetch messages"
       );
     }
   }
@@ -28,6 +27,34 @@ const messageSlice = createSlice({
     clearMessages: (state) => {
       state.messages = [];
       state.error = null;
+    },
+    addMessage: (state, action) => {
+      state.messages.push(action.payload);
+    },
+    deleteMessage: (state, action) => {
+      state.messages = state.messages.filter(
+        (message) => message._id !== action.payload
+      );
+    },
+    updateMessageStatus: (state, action) => {
+      const { messageId, status } = action.payload;
+
+      const message = state.messages.find(
+        (message) => message._id === messageId
+      );
+
+      if (message) {
+        message.status = status;
+      }
+    },
+    updateMessagesStatus: (state, action) => {
+      const { messageIds, status } = action.payload;
+
+      state.messages.forEach((message) => {
+        if (messageIds.includes(message._id)) {
+          message.status = status;
+        }
+      });
     },
   },
   extraReducers: (builder) => {
@@ -59,7 +86,6 @@ const messageSlice = createSlice({
   },
 });
 
-export const { clearMessages } =
+export const { clearMessages, addMessage, updateMessageStatus, updateMessagesStatus ,deleteMessage} =
   messageSlice.actions;
-
 export default messageSlice.reducer;

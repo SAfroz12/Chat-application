@@ -21,7 +21,6 @@ export const fetchConversations = createAsyncThunk(
     }
 );
 //create new conversation;
-
 export const createNewConversation =
     createAsyncThunk(
         "conversation/createNewConversation",
@@ -72,7 +71,27 @@ const conversationSlice = createSlice({
         conversationError: null,
     },
 
-    reducers: {},
+    reducers: {
+        updateLastMessage: (state, action) => {
+            const message = action.payload;
+
+            const conversation = state.conversations.find(
+                (conversation) =>
+                    conversation._id === message.conversation
+            );
+            if (!conversation) {
+                return;
+            }
+            conversation.lastMessage = message;
+            conversation.updatedAt = message.createdAt;
+            state.conversations = [
+                conversation,
+                ...state.conversations.filter(
+                    (item) => item._id !== conversation._id
+                ),
+            ];
+        }
+    },
 
     extraReducers: (builder) => {
         builder
@@ -152,5 +171,5 @@ const conversationSlice = createSlice({
             )
     },
 });
-
+export const { updateLastMessage, } = conversationSlice.actions;
 export default conversationSlice.reducer;
