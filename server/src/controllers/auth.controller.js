@@ -208,13 +208,15 @@ const refreshAccessToken = async (req, res) => {
 
 const googleCallback = async (req, res) => {
   try {
+     console.log("GOOGLE CALLBACK REACHED");
+    console.log("USER:", req.user);
     const accessToken = generateAccessToken(req.user._id);
     const refreshToken = generateRefreshToken(req.user._id);
 
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: true,
+      sameSite: "none",
       maxAge: 15 * 60 * 1000,
     })
       .cookie("refreshToken", refreshToken, {

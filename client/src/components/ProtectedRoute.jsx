@@ -5,7 +5,6 @@ function ProtectedRoute({ children }) {
   const { user, loading } = useSelector(
     (state) => state.auth
   );
-
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
