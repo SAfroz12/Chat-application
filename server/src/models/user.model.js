@@ -26,7 +26,9 @@ const userSchema = new mongoose.Schema(
 
     password: {
       type: String,
-      required: [true, "Password is required"],
+      required: function () {
+        return this.provider === "local";
+      },
       minlength: 6,
       select: false,
     },
@@ -54,16 +56,16 @@ const userSchema = new mongoose.Schema(
 
 
 userSchema.pre("save", async function () {
-    if (!this.isModified("password")) {
-        return ;
-    }
-    
-    this.password = await bcrypt.hash(this.password, 10);
-    
-  
+  if (!this.isModified("password")) {
+    return;
+  }
+
+  this.password = await bcrypt.hash(this.password, 10);
+
+
 });
 userSchema.methods.comparePassword = async function (password) {
-    return await bcrypt.compare(password, this.password);
+  return await bcrypt.compare(password, this.password);
 };
 const User = mongoose.model("User", userSchema);
 module.exports = User;
