@@ -91,13 +91,13 @@ const loginUser = async (req, res) => {
     const accessToken = generateAccessToken(user._id);
 
     const refreshToken = generateRefreshToken(user._id);
+    const isProduction = process.env.NODE_ENV === "production";
 
     const cookieOptions = {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
     };
-
     res.cookie("accessToken", accessToken, {
       ...cookieOptions,
       maxAge: 15 * 60 * 1000, // 15 minutes
@@ -208,21 +208,23 @@ const refreshAccessToken = async (req, res) => {
 
 const googleCallback = async (req, res) => {
   try {
-     console.log("GOOGLE CALLBACK REACHED");
+    console.log("GOOGLE CALLBACK REACHED");
     console.log("USER:", req.user);
     const accessToken = generateAccessToken(req.user._id);
     const refreshToken = generateRefreshToken(req.user._id);
 
+    const isProduction = process.env.NODE_ENV === "production";
+
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
       maxAge: 15 * 60 * 1000,
     })
       .cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        secure: false,
-        sameSite: "lax",
+        secure: isProduction,
+        sameSite: isProduction ? "none" : "lax",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       })
       .redirect(`${process.env.CLIENT_URL}/chat`);
