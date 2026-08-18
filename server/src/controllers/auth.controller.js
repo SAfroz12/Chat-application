@@ -210,6 +210,9 @@ const googleCallback = async (req, res) => {
   try {
     console.log("GOOGLE CALLBACK REACHED");
     console.log("USER:", req.user);
+    if (!req.user) {
+      return res.redirect(`${process.env.CLIENT_URL}/login`);
+    }
     const accessToken = generateAccessToken(req.user._id);
     const refreshToken = generateRefreshToken(req.user._id);
 
