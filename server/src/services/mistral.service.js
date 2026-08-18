@@ -32,16 +32,34 @@ const generateSmartReplies = async (message) => {
       .replace(/```/g, "")
       .trim();
 
-    const suggestions = JSON.parse(content);
+    let suggestions;
+    try {
+      suggestions = JSON.parse(content);
+    } catch (parseError) {
+      console.error("JSON parse failed:", parseError.message);
 
+      // Handle multiple JSON arrays returned separately
+      const arrays = content.match(/\[[\s\S]*?\]/g);
+
+      if (!arrays) {
+        return [];
+      }
+
+      suggestions = arrays
+        .flatMap((item) => JSON.parse(item));
+    }
+
+    // Make sure we only return strings
+    suggestions = suggestions
+      .filter((item) => typeof item === "string")
+      .slice(0, 3);
+      
     return suggestions;
-
   } catch (error) {
     console.error(
       "Mistral API Error:",
       error.message
     );
-
     return [];
   }
 };

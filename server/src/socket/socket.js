@@ -26,13 +26,13 @@ const initializeSocket = (server) => {
         return next(new Error("Authentication required"));
       }
 
-     const accessToken = cookies
-      .split(";")
-      .map((cookie) => cookie.trim())
-      .find((cookie) =>
-        cookie.startsWith("accessToken=")
-      )
-      ?.split("=")[1];
+      const accessToken = cookies
+        .split(";")
+        .map((cookie) => cookie.trim())
+        .find((cookie) =>
+          cookie.startsWith("accessToken=")
+        )
+        ?.split("=")[1];
 
       if (!accessToken) {
         return next(new Error("Access token not found"));
@@ -77,6 +77,12 @@ const initializeSocket = (server) => {
         userId,
       });
     }
+    // Tell the newly connected user who is already online
+    const currentlyOnlineUsers = Array.from(onlineUsers.keys());
+
+    socket.emit("onlineUsers", {
+      userIds: currentlyOnlineUsers,
+    });
 
 
     // Join conversation
@@ -176,19 +182,17 @@ const initializeSocket = (server) => {
           (participantId) =>
             participantId.toString() !== userId.toString()
         );
-
-        // Find receiver's socket
-        const receiverSocketId = onlineUsers.get(receiverId.toString());
-
         // Send AI suggestions only to receiver
-        if (receiverSocketId &&suggestions.length > 0) {
-          io.to(receiverSocketId).emit(
-            "smartReplySuggestions",
-            {
+
+        const receiverSocketIds = onlineUsers.get(receiverId.toString());
+
+        if (receiverSocketIds && suggestions.length > 0) {
+          receiverSocketIds.forEach((socketId) => {
+            io.to(socketId).emit("smartReplySuggestions", {
               messageId: message._id,
               suggestions,
-            }
-          );
+            });
+          });
         }
       }
 
@@ -201,10 +205,7 @@ const initializeSocket = (server) => {
       }
     });
 
-
-
-
-    // TYPING
+    // typing
     socket.on("typing", async ({ conversationId }) => {
       try {
         if (!conversationId) {
@@ -325,9 +326,9 @@ const initializeSocket = (server) => {
     //message read
 
     socket.on("messageRead",
-      async ({ messageId, conversationId }) => {
+      async ({ conversationId }) => {
         try {
-          if (!messageId || !conversationId) {
+          if (!conversationId) {
             return;
           }
 
@@ -343,44 +344,142 @@ const initializeSocket = (server) => {
           if (!conversation) {
             return;
           }
-
-          // Find the message
-          const message = await Message.findOne({
-            _id: messageId,
+          // Find all unread messages sent by the OTHER user
+          const unreadMessages = await Message.find({
             conversation: conversationId,
-          });
-
-          if (!message) {
+            sender: { $ne: userId },
+            status: { $ne: "read" },
+          }).select("_id");
+          if (unreadMessages.length === 0) {
             return;
           }
-
-          // Don't mark your own message
-          // as read
-          if (message.sender.toString() === userId.toString()) {
-            return;
-          }
-
-          // Update status
-          if (message.status !== "read") {
-            message.status = "read";
-            await message.save();
-          }
+          //  Get all unread message IDs
+          const messageIds = unreadMessages.map(
+            (message) => message._id.toString()
+          );
+          // Mark all of them as read
+          await Message.updateMany(
+            {
+              _id: { $in: messageIds },
+            },
+            {
+              $set: {
+                status: "read",
+              },
+            }
+          );
           // Tell everyone in the conversation
           io.to(conversationId).emit("messageRead",
             {
-              messageId,
+              messageIds,
               userId,
             }
           );
 
         } catch (error) {
-          console.error(
-            "Message read error:",
-            error
-          );
+          console.error("Message read error:", error);
         }
       }
     );
+
+
+    // Delete message
+    socket.on("deleteMessage", async ({ messageId, conversationId }) => {
+      try {
+        if (!messageId || !conversationId) {
+          return;
+        }
+
+        const userId = socket.user.userId;
+
+        // Check whether user belongs to this conversation
+        const conversation = await Conversation.findOne({
+          _id: conversationId,
+          participants: userId,
+        });
+
+        if (!conversation) {
+          return;
+        }
+
+        // Find the message
+        const message = await Message.findOne({
+          _id: messageId,
+          conversation: conversationId,
+        });
+
+        if (!message) {
+          return;
+        }
+
+        // Only the sender can delete their own message
+        if (message.sender.toString() !== userId.toString()) {
+          return;
+        }
+
+        // Delete message
+        await Message.findByIdAndDelete(messageId);
+
+        // If this was the last message, update conversation.lastMessage
+        if (
+          conversation.lastMessage &&
+          conversation.lastMessage.toString() === messageId.toString()
+        ) {
+          const previousMessage = await Message.findOne({
+            conversation: conversationId,
+          }).sort({ createdAt: -1 });
+
+          conversation.lastMessage = previousMessage
+            ? previousMessage._id
+            : null;
+
+          await conversation.save();
+        }
+
+        // Tell everyone in the conversation
+        io.to(conversationId).emit("messageDeleted", {
+          messageId,
+          conversationId,
+        });
+
+      } catch (error) {
+        console.error("Delete message error:", error);
+      }
+    });
+
+    //edit message 
+    socket.on("editMessage", async ({ messageId, conversationId, text }) => {
+      try {
+        if (!text?.trim()) {
+          return;
+        }
+
+        const message = await Message.findById(messageId);
+
+        if (!message) {
+          return;
+        }
+
+        // Only the sender can edit the message
+        if (message.sender.toString() !== socket.user.userId.toString()) {
+          return;
+        }
+
+        message.text = text.trim();
+        message.edited = true;
+
+        await message.save();
+
+        io.to(conversationId).emit("messageEdited", {
+          messageId: message._id,
+          text: message.text,
+          edited: true,
+        });
+
+      } catch (error) {
+        console.error("Edit message error:", error);
+      }
+    });
     // Disconnect
     socket.on("disconnect", () => {
       const sockets = onlineUsers.get(userId);

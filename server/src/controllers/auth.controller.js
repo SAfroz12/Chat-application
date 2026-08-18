@@ -186,11 +186,11 @@ const refreshAccessToken = async (req, res) => {
     const newAccessToken = generateAccessToken(user._id);
 
     res.cookie("accessToken", newAccessToken, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "lax",
-        maxAge: 15 * 60 * 1000,
-      })
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      maxAge: 15 * 60 * 1000,
+    })
       .status(200)
       .json({
         success: true,
@@ -212,21 +212,21 @@ const googleCallback = async (req, res) => {
     const refreshToken = generateRefreshToken(req.user._id);
 
     res.cookie("accessToken", accessToken, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "lax",
-        maxAge: 15 * 60 * 1000,
-      })
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      maxAge: 15 * 60 * 1000,
+    })
       .cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: false,
         sameSite: "lax",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       })
-      .redirect(process.env.CLIENT_URL);
+      .redirect(`${process.env.CLIENT_URL}/chat`);
   } catch (error) {
     console.error(error);
-
+    res.redirect(`${process.env.CLIENT_URL}/login`);
     res.status(500).json({
       success: false,
       message: "Google authentication failed",
