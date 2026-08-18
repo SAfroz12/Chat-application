@@ -8,7 +8,6 @@ import { getMe } from "./store/authSlice";
 import ProtectedRoute from "./components/ProtectedRoute";
 function App() {
   const dispatch = useDispatch();
-
   useEffect(() => {
     dispatch(getMe());
   }, [dispatch]);
@@ -16,7 +15,6 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />

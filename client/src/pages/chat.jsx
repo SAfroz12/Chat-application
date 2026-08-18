@@ -1,7 +1,10 @@
 import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchConversations, updateLastMessage } from "../store/conversationSlice";
-import { fetchMessages, addMessage, updateMessageStatus, updateMessagesStatus, deleteMessage, } from "../store/messageSlice";
+import {
+  fetchMessages, addMessage, updateMessageStatus, updateMessagesStatus, deleteMessage,
+  editMessage
+} from "../store/messageSlice";
 import socket from "../socket/socket";
 import { fetchUsers, clearUsers } from "../store/userSlice";
 import { createConversation } from "../services/conversationService";
@@ -15,7 +18,7 @@ function Chat() {
   const [search, setSearch] = useState("");
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [smartReplies, setSmartReplies] = useState([]);
-
+  const [editingMessageId, setEditingMessageId] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const messagesEndRef = useRef(null);
@@ -57,11 +60,28 @@ function Chat() {
     setSmartReplies([]);
   };
 
+  //messsage recieve
+  const handleEditMessage = (message) => {
+    setEditingMessageId(message._id);
+    setText(message.text);
+  };
   // send message
 
   const handleSendMessage = () => {
     if (!text.trim()) return;
     if (!selectedConversation) return;
+
+    if (editingMessageId) {
+      socket.emit("editMessage", {
+        messageId: editingMessageId,
+        conversationId: selectedConversation._id,
+        text: text.trim(),
+      });
+
+      setEditingMessageId(null);
+      setText("");
+      return;
+    }
 
     socket.emit("sendMessage", {
       conversationId: selectedConversation._id,
@@ -71,6 +91,8 @@ function Chat() {
     setText("");
     setSmartReplies([]);
   };
+
+
 
   // user click
 
@@ -243,6 +265,24 @@ function Chat() {
 
     return () => {
       socket.off("messageDeleted", handleMessageDeleted);
+    };
+  }, [dispatch]);
+
+
+  ///edit message
+  useEffect(() => {
+    const handleMessageEdited = ({
+      messageId,
+      text,
+      edited,
+    }) => {
+      dispatch(editMessage({ messageId, text, edited, }));
+    };
+
+    socket.on("messageEdited", handleMessageEdited);
+
+    return () => {
+      socket.off("messageEdited", handleMessageEdited);
     };
   }, [dispatch]);
 
@@ -760,10 +800,17 @@ function Chat() {
                             }`}
                         >
 
-                          <p className="text-sm leading-6">
-                            {message.text}
-                          </p>
+                          <div className="flex items-end gap-2">
+                            <p className="text-sm leading-6">
+                              {message.text}
+                            </p>
 
+                            {message.edited && (
+                              <span className="text-[10px] opacity-60">
+                                edited
+                              </span>
+                            )}
+                          </div>
                         </div>
 
                         <div
@@ -797,7 +844,12 @@ function Chat() {
                                 {message.status === "read" &&
                                   "✓✓"}
                               </span>
-
+                              <button
+                                onClick={() => handleEditMessage(message)}
+                                className="hover:text-indigo-500"
+                              >
+                                Edit
+                              </button>
                               <button
                                 onClick={() => {
                                   socket.emit(

@@ -61,10 +61,11 @@ function Login() {
     }
   };
 
-  const handleGoogleLogin = () => {
-    window.location.href =
-      "http://localhost:5000/api/v1/auth/google";
-  };
+const handleGoogleLogin = () => {
+    console.log(import.meta.env.VITE_API_URL);
+  window.location.href =
+    `${import.meta.env.VITE_API_URL}/auth/google`;
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-100 flex items-center justify-center px-4 py-10">
