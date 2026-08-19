@@ -76,6 +76,13 @@ const loginUser = async (req, res) => {
         message: "Invalid email or password",
       });
     }
+    if (!user.password) {
+      return res.status(401).json({
+        success: false,
+        message: "This account uses Google login. Please continue with Google.",
+      });
+    }
+
 
     // Compare Password
     const isMatch = await user.comparePassword(password);
