@@ -377,7 +377,7 @@ function Chat() {
     }
   };
   return (
-    <div className="min-h-screen bg-slate-100 p-4 md:p-6">
+    <div className="min-h-screen bg-[#FAD4BC] p-4 md:p-6">
 
       <div className="mx-auto flex h-[calc(100vh-32px)] max-w-7xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg">
 
@@ -730,7 +730,7 @@ function Chat() {
 
               {/* messages */}
 
-              <div className="flex-1 overflow-y-auto bg-slate-50 px-6 py-6">
+              <div className="flex-1 overflow-y-auto bg-[#FFF8F2] px-6 py-6">
 
                 {messagesLoading && (
                   <p className="text-center text-sm text-slate-400">
@@ -795,8 +795,8 @@ function Chat() {
 
                         <div
                           className={`rounded-2xl px-4 py-3 shadow-sm ${isMyMessage
-                            ? "rounded-br-md bg-indigo-600 text-white"
-                            : "rounded-bl-md bg-white text-slate-800 border border-slate-100"
+                            ? "rounded-br-md bg-[#171412] text-white"
+                            : "rounded-bl-md bg-[#FFF8F2] text-[#171412] border border-[#D8C7BA]"
                             }`}
                         >
 
@@ -966,8 +966,7 @@ function Chat() {
                       }
                     }}
                     placeholder="Write a message..."
-                    className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-indigo-400 focus:bg-white focus:ring-2 focus:ring-indigo-100"
-                  />
+                    className="flex-1 rounded-full border border-[#BFAFA3] bg-[#FFF8F2] px-5 py-3 text-sm text-[#171412] outline-none placeholder:text-[#8B817A] focus:border-[#171412]"/>
 
                   <button
                     onClick={handleSendMessage}
