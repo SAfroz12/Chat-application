@@ -414,7 +414,7 @@ function Chat() {
                 className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-600 text-lg font-medium text-white transition hover:bg-indigo-700"
                 title="New conversation"
               >
-                +
+                🔍
               </button>
 
             </div>
