@@ -481,8 +481,13 @@ const initializeSocket = (server) => {
       }
     });
     // Disconnect
-    socket.on("disconnect", () => {
+    socket.on("disconnect", (reason) => {
+
       const sockets = onlineUsers.get(userId);
+      console.log("SOCKET DISCONNECTED");
+      console.log("User:", userId);
+      console.log("Socket:", socket.id);
+      console.log("Reason:", reason);
       if (!sockets) {
         return;
       }
