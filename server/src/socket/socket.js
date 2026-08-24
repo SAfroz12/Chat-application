@@ -9,6 +9,8 @@ const initializeSocket = (server) => {
     cors: {
       origin: process.env.CLIENT_URL,
       credentials: true,
+      pingInterval: 3000,
+      pingTimeout: 3000,
     },
   });
 
