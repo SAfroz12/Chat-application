@@ -166,10 +166,35 @@ function Chat() {
     };
   }, [user?._id]);
 
+
+
+  //image upload thing 
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    try {
+      const imageUrl = await uploadImage(file);
+
+      console.log("Uploaded image:", imageUrl);
+      console.log("EMITTING IMAGE MESSAGE");
+      socket.emit("sendMessage", {
+        conversationId: selectedConversation._id,
+        text: "",
+        image: imageUrl,
+      });
+
+    } catch (error) {
+      console.error("Image upload failed:", error);
+    }
+  };
   // new message
 
   useEffect(() => {
     const handleNewMessage = (message) => {
+      console.log("NEW MESSAGE FROM SOCKET:", message);
+      console.log("IMAGE URL:", message.image);
       dispatch(addMessage(message));
 
       dispatch(updateLastMessage(message));
@@ -379,20 +404,7 @@ function Chat() {
   };
 
 
-  //image upload thing 
-  const handleImageChange = async (e) => {
-    const file = e.target.files[0];
 
-    if (!file) return;
-
-    try {
-      const imageUrl = await uploadImage(file);
-
-      console.log("Uploaded image:", imageUrl);
-    } catch (error) {
-      console.error("Image upload failed:", error);
-    }
-  };
   return (
     <div className="min-h-screen bg-[#FAD4BC] p-4 md:p-6">
 
@@ -816,17 +828,36 @@ function Chat() {
                             : "rounded-bl-md bg-[#FFF8F2] text-[#171412] border border-[#D8C7BA]"
                             }`}
                         >
-
-                          <div className="flex items-end gap-2">
-                            <p className="text-sm leading-6">
-                              {message.text}
-                            </p>
-
-                            {message.edited && (
-                              <span className="text-[10px] opacity-60">
-                                edited
-                              </span>
+                          <div>
+                            {message.image && (
+                              <img
+                                src={message.image}
+                                alt="Shared image"
+                                className="mb-2 max-w-xs rounded-lg"
+                              />
                             )}
+
+                            <div>
+                              {message.image && (
+                                <img
+                                  src={message.image}
+                                  alt="Shared image"
+                                  className="mb-2 max-w-xs rounded-lg"
+                                />
+                              )}
+
+                              {message.text && (
+                                <p className="text-sm leading-6">
+                                  {message.text}
+                                </p>
+                              )}
+
+                              {message.edited && (
+                                <span className="text-[10px] opacity-60">
+                                  edited
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
 
