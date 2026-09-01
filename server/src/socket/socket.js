@@ -4,14 +4,18 @@ const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const Conversation = require("../models/conversation.model")
 const Message = require("../models/message.model")
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://chat-application-ten-orcin.vercel.app",
+];
 const initializeSocket = (server) => {
   const io = new Server(server, {
     cors: {
-      origin: process.env.CLIENT_URL,
+      origin:allowedOrigins,
       credentials: true,
-      pingInterval: 3000,
-      pingTimeout: 3000,
     },
+    pingInterval: 3000,
+    pingTimeout: 3000,
   });
 
   // console.log(io)
