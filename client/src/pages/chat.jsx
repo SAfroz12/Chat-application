@@ -836,16 +836,6 @@ function Chat() {
                                 className="mb-2 max-w-xs rounded-lg"
                               />
                             )}
-
-                            <div>
-                              {message.image && (
-                                <img
-                                  src={message.image}
-                                  alt="Shared image"
-                                  className="mb-2 max-w-xs rounded-lg"
-                                />
-                              )}
-
                               {message.text && (
                                 <p className="text-sm leading-6">
                                   {message.text}
@@ -857,7 +847,7 @@ function Chat() {
                                   edited
                                 </span>
                               )}
-                            </div>
+                        
                           </div>
                         </div>
 
