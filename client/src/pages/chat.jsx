@@ -10,6 +10,7 @@ import { fetchUsers, clearUsers } from "../store/userSlice";
 import { createConversation } from "../services/conversationService";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
+import { uploadImage } from "../services/uploadService";
 function Chat() {
   const [selectedConversation, setSelectedConversation] = useState(null);
   const [showNewChat, setShowNewChat] = useState(false);
@@ -374,6 +375,22 @@ function Chat() {
       navigate("/login");
     } catch (error) {
       console.error("Logout failed:", error);
+    }
+  };
+
+
+  //image upload thing 
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    try {
+      const imageUrl = await uploadImage(file);
+
+      console.log("Uploaded image:", imageUrl);
+    } catch (error) {
+      console.error("Image upload failed:", error);
     }
   };
   return (
@@ -928,6 +945,24 @@ function Chat() {
 
                 <div className="flex items-center gap-3">
 
+                  {/* Image upload */}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    id="image-upload"
+                    className="hidden"
+                    onChange={handleImageChange}
+                  />
+
+                  <label
+                    htmlFor="image-upload"
+                    className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl border border-[#BFAFA3] bg-[#FFF8F2] text-lg hover:bg-[#F5E8DD]"
+                    title="Send image"
+                  >
+                    +
+                  </label>
+
+                  {/*/message input */}
                   <input
                     type="text"
                     value={text}
@@ -966,7 +1001,7 @@ function Chat() {
                       }
                     }}
                     placeholder="Write a message..."
-                    className="flex-1 rounded-full border border-[#BFAFA3] bg-[#FFF8F2] px-5 py-3 text-sm text-[#171412] outline-none placeholder:text-[#8B817A] focus:border-[#171412]"/>
+                    className="flex-1 rounded-full border border-[#BFAFA3] bg-[#FFF8F2] px-5 py-3 text-sm text-[#171412] outline-none placeholder:text-[#8B817A] focus:border-[#171412]" />
 
                   <button
                     onClick={handleSendMessage}
