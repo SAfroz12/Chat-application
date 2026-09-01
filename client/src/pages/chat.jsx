@@ -406,28 +406,26 @@ function Chat() {
 
 
   return (
-    <div className="min-h-screen bg-[#FAD4BC] p-4 md:p-6">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top_right,#0f2a4a_0%,#050912_35%,#02040a_75%,#010205_100%)] px-3 py-3 md:px-5 md:py-5">
 
-      <div className="mx-auto flex h-[calc(100vh-32px)] max-w-7xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg">
-
+      <div className="mx-auto flex h-[92vh] w-[92vw] max-w-[1700px] overflow-hidden rounded-3xl border border-[#1e3a5f] bg-[#0b1220] shadow-2xl shadow-black/60">
         {/* left sidebar */}
 
-        <aside className="flex w-full max-w-[330px] flex-col border-r border-slate-200 bg-white">
-
+        <aside className="flex w-full max-w-[330px] flex-col border-r border-[#1e3a5f] bg-[#09111f]">
           {/* brand */}
 
-          <div className="border-b border-slate-200 px-5 py-4">
+          <div className="border-b border-[#1e2f4a] px-5 py-5">
 
             <div className="flex items-center justify-between">
 
               <div className="flex items-center gap-3">
 
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-lg font-bold text-white">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600 text-lg font-bold text-white shadow-lg shadow-blue-600/20">
                   N
                 </div>
 
                 <div>
-                  <h1 className="text-lg font-bold text-slate-900">
+                  <h1 className="text-lg font-bold text-white">
                     Nexora
                   </h1>
 
@@ -440,7 +438,7 @@ function Chat() {
 
               <button
                 onClick={() => setShowNewChat(true)}
-                className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-600 text-lg font-medium text-white transition hover:bg-indigo-700"
+                className="flex h-10 w-10 items-center justify-center rounded-xl border border-blue-500/30 bg-blue-600/15 text-lg font-medium text-blue-400 transition hover:bg-blue-600/25"
                 title="New conversation"
               >
                 🔍
@@ -452,7 +450,7 @@ function Chat() {
 
           {/* current user */}
 
-          <div className="border-b border-slate-200 px-5 py-4">
+          <div className="border-b border-[#1e2f4a] px-5 py-4 bg-[#0a1424]">
 
             <div className="flex items-center gap-3">
 
@@ -466,7 +464,7 @@ function Chat() {
 
               <div className="min-w-0">
 
-                <p className="truncate text-sm font-semibold text-slate-800">
+                <p className="truncate text-sm font-semibold text-white">
                   {user?.name || "User"}
                 </p>
 
@@ -483,11 +481,11 @@ function Chat() {
           {/* new chat */}
 
           {showNewChat && (
-            <div className="border-b border-slate-200 bg-slate-50 p-4">
+         <div className="border-b border-[#1e2f4a] bg-[#0d1828] p-4">
 
               <div className="mb-3 flex items-center justify-between">
 
-                <h3 className="text-sm font-semibold text-slate-800">
+                <h3 className="text-sm font-semibold text-white">
                   New Conversation
                 </h3>
 
@@ -497,7 +495,7 @@ function Chat() {
                     setSearch("");
                     dispatch(clearUsers());
                   }}
-                  className="text-xs font-medium text-slate-400 hover:text-slate-700"
+               className="text-xs font-medium text-slate-400 hover:text-white"
                 >
                   Close
                 </button>
@@ -509,8 +507,7 @@ function Chat() {
                 value={search}
                 onChange={handleSearchUsers}
                 placeholder="Search people..."
-                className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
-              />
+                className="w-full rounded-xl border border-[#263449] bg-[#111827] px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" />
 
               <div className="mt-3 max-h-52 overflow-y-auto">
 
@@ -562,7 +559,7 @@ function Chat() {
 
           <div className="px-5 py-4">
 
-            <h2 className="text-sm font-semibold text-slate-800">
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-400">
               Conversations
             </h2>
 
@@ -620,9 +617,9 @@ function Chat() {
                   onClick={() =>
                     handleConversationClick(conversation)
                   }
-                  className={`flex cursor-pointer items-center gap-3 border-b border-slate-100 px-5 py-4 transition ${isSelected
-                    ? "bg-indigo-50"
-                    : "hover:bg-slate-50"
+                  className={`flex cursor-pointer items-center gap-3 border-b border-[#16263b] px-5 py-4 transition ${isSelected
+                    ? "bg-blue-600/15 border-l-2 border-blue-500 shadow-inner shadow-blue-500/5"
+                    : "hover:bg-white/[0.03]"
                     }`}
                 >
 
@@ -645,8 +642,8 @@ function Chat() {
 
                       <p
                         className={`truncate text-sm font-semibold ${isSelected
-                          ? "text-indigo-700"
-                          : "text-slate-800"
+                          ? "text-blue-400"
+                          : "text-slate-200"
                           }`}
                       >
                         {participant?.name || "Conversation"}
@@ -669,11 +666,10 @@ function Chat() {
 
           {/* logout */}
 
-          <div className="border-t border-slate-200 p-4">
+          <div className="border-t border-[#1E293B] p-4">
             <button
               onClick={handleLogout}
-              className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-red-50 hover:text-red-600"
-            >
+              className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-slate-400 transition hover:bg-red-500/10 hover:text-red-400"          >
               <span className="text-base">↪</span>
               Logout
             </button>
@@ -688,18 +684,17 @@ function Chat() {
 
             /* empty state */
 
-            <div className="flex flex-1 items-center justify-center bg-slate-50">
+            <div className="flex flex-1 items-center justify-center bg-[#0a1424]">
 
               <div className="text-center">
 
-                <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-2xl bg-indigo-100 text-3xl font-bold text-indigo-600">
+                <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-2xl border border-blue-500/30 bg-blue-500/10 text-3xl font-bold text-blue-400 shadow-lg shadow-blue-900/20">
                   N
                 </div>
 
-                <h2 className="text-xl font-semibold text-slate-800">
+                <h2 className="text-xl font-semibold text-white">
                   Welcome to Nexora
                 </h2>
-
                 <p className="mt-2 text-sm text-slate-400">
                   Select a conversation to start chatting
                 </p>
@@ -714,8 +709,7 @@ function Chat() {
 
               {/* chat header */}
 
-              <div className="flex items-center justify-between border-b border-slate-200 bg-white px-6 py-4">
-
+              <div className="flex items-center justify-between border-b border-[#1e2f4a] bg-[#0c1626] px-6 py-5">
                 <div className="flex items-center gap-3">
 
                   <div className="relative">
@@ -726,7 +720,7 @@ function Chat() {
                     />
 
                     <span
-                      className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white ${isOtherOnline
+                      className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-[#0B1220] ${isOtherOnline
                         ? "bg-green-500"
                         : "bg-slate-300"
                         }`}
@@ -736,7 +730,7 @@ function Chat() {
 
                   <div>
 
-                    <h2 className="text-sm font-semibold text-slate-900">
+                    <h2 className="text-base font-semibold text-white">
                       {otherParticipant?.name || "User"}
                     </h2>
 
@@ -759,7 +753,7 @@ function Chat() {
 
               {/* messages */}
 
-              <div className="flex-1 overflow-y-auto bg-[#FFF8F2] px-6 py-6">
+              <div className="flex-1 overflow-y-auto bg-[#07101c] px-6 py-6">
 
                 {messagesLoading && (
                   <p className="text-center text-sm text-slate-400">
@@ -779,7 +773,7 @@ function Chat() {
 
                       <div className="text-center">
 
-                        <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-indigo-100 text-indigo-600">
+                        <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-blue-500/10 text-blue-400 ring-1 ring-blue-500/20">
                           💬
                         </div>
 
@@ -823,9 +817,9 @@ function Chat() {
                       >
 
                         <div
-                          className={`rounded-2xl px-4 py-3 shadow-sm ${isMyMessage
-                            ? "rounded-br-md bg-[#171412] text-white"
-                            : "rounded-bl-md bg-[#FFF8F2] text-[#171412] border border-[#D8C7BA]"
+                          className={`rounded-2xl px-4 py-3 shadow-lg ${isMyMessage
+                            ? "rounded-br-md bg-[#2563eb] text-white shadow-lg shadow-blue-900/30"
+                            : "rounded-bl-md border border-[#263a55] bg-[#101b2b] text-slate-100"
                             }`}
                         >
                           <div>
@@ -833,28 +827,28 @@ function Chat() {
                               <img
                                 src={message.image}
                                 alt="Shared image"
-                                className="mb-2 max-w-xs rounded-lg"
+                                className="mb-2 max-w-sm rounded-xl border border-white/10 object-cover shadow-md"
                               />
                             )}
-                              {message.text && (
-                                <p className="text-sm leading-6">
-                                  {message.text}
-                                </p>
-                              )}
+                            {message.text && (
+                              <p className="text-sm leading-6 text-inherit">
+                                {message.text}
+                              </p>
+                            )}
 
-                              {message.edited && (
-                                <span className="text-[10px] opacity-60">
-                                  edited
-                                </span>
-                              )}
-                        
+                            {message.edited && (
+                              <span className="text-[10px] opacity-60">
+                                edited
+                              </span>
+                            )}
+
                           </div>
                         </div>
 
                         <div
                           className={`mt-1.5 flex items-center gap-2 text-[11px] ${isMyMessage
-                            ? "justify-end text-slate-400"
-                            : "text-slate-400"
+                            ? "justify-end text-blue-400"
+                            : "text-blue-400"
                             }`}
                         >
 
@@ -922,7 +916,7 @@ function Chat() {
               {/* typing */}
 
               {isOtherTyping && (
-                <div className="bg-white px-6 pb-2">
+                <div className="bg-[#0B1220] px-6 pb-2">
 
                   <p className="text-xs text-slate-400">
                     {otherParticipant?.name} is typing...
@@ -934,7 +928,7 @@ function Chat() {
               {/* smart replies */}
 
               {smartReplies.length > 0 && (
-                <div className="border-t border-slate-100 bg-white px-5 py-3">
+               <div className="border-t border-[#1e2f4a] bg-[#0a1424] px-5 py-3">
 
                   <p className="mb-2 text-[11px] font-medium uppercase tracking-wide text-slate-400">
                     Smart replies
@@ -949,7 +943,7 @@ function Chat() {
                           setText(reply);
                           setSmartReplies([]);
                         }}
-                        className="rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1.5 text-xs font-medium text-indigo-600 transition hover:bg-indigo-100"
+                        className="rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-2 text-xs font-medium text-blue-400 transition hover:bg-blue-500/20"
                       >
                         {reply}
                       </button>
@@ -962,7 +956,7 @@ function Chat() {
 
               {/* input */}
 
-              <div className="border-t border-slate-200 bg-white p-4">
+              <div className="border-t border-[#1e2f4a] bg-[#0a1424] p-4">
 
                 <div className="flex items-center gap-3">
 
@@ -977,7 +971,7 @@ function Chat() {
 
                   <label
                     htmlFor="image-upload"
-                    className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl border border-[#BFAFA3] bg-[#FFF8F2] text-lg hover:bg-[#F5E8DD]"
+                    className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-2xl border border-[#29415f] bg-[#101b2b] text-lg text-blue-400 transition hover:border-blue-500/50 hover:bg-blue-500/10"
                     title="Send image"
                   >
                     +
@@ -1022,12 +1016,12 @@ function Chat() {
                       }
                     }}
                     placeholder="Write a message..."
-                    className="flex-1 rounded-full border border-[#BFAFA3] bg-[#FFF8F2] px-5 py-3 text-sm text-[#171412] outline-none placeholder:text-[#8B817A] focus:border-[#171412]" />
+                    className="flex-1 rounded-full border border-[#29415f] bg-[#101b2b] px-5 py-3 text-sm text-white outline-none placeholder:text-slate-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" />
 
                   <button
                     onClick={handleSendMessage}
                     disabled={!text.trim()}
-                    className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-600 text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400"
+                    className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-lg shadow-blue-900/20 transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:bg-[#16263b] disabled:text-slate-600"
                     title="Send message"
                   >
                     ➤
