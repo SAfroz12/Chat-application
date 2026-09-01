@@ -11,7 +11,7 @@ const allowedOrigins = [
 const initializeSocket = (server) => {
   const io = new Server(server, {
     cors: {
-      origin:allowedOrigins,
+      origin: allowedOrigins,
       credentials: true,
     },
     pingInterval: 3000,
@@ -125,7 +125,8 @@ const initializeSocket = (server) => {
     });
     socket.on("sendMessage", async (data) => {
       try {
-        const { conversationId, text } = data;
+         console.log("SEND MESSAGE RECEIVED:", data);
+        const { conversationId, text, image } = data;
 
         const userId = socket.user.userId;
 
@@ -137,12 +138,11 @@ const initializeSocket = (server) => {
         }
 
         // Validate message
-        if (!text || !text.trim()) {
+        if ((!text || !text.trim()) && !image) {
           return socket.emit("messageError", {
             message: "Message cannot be empty",
           });
         }
-
         // Check conversation + authorization
         const conversation = await Conversation.findOne({
           _id: conversationId,
@@ -159,9 +159,9 @@ const initializeSocket = (server) => {
         const message = await Message.create({
           conversation: conversationId,
           sender: userId,
-          text: text.trim(),
+          text: text ? text.trim() : "",
+          image: image || "",
         });
-
         // Update last message
         conversation.lastMessage = message._id;
 
@@ -181,28 +181,36 @@ const initializeSocket = (server) => {
 
 
         //ai  Smart Reply
-        const suggestions = await generateSmartReplies(message.text);
+        if (text && text.trim()) {
+          const suggestions = await generateSmartReplies(
+            text.trim()
+          );
 
-        // Find receiver
-        const receiverId = conversation.participants.find(
-          (participantId) =>
-            participantId.toString() !== userId.toString()
-        );
-        // Send AI suggestions only to receiver
+          const receiverId = conversation.participants.find(
+            (participantId) =>
+              participantId.toString() !== userId.toString()
+          );
 
-        const receiverSocketIds = onlineUsers.get(receiverId.toString());
+          const receiverSocketIds =
+            onlineUsers.get(receiverId.toString());
 
-        if (receiverSocketIds && suggestions.length > 0) {
-          receiverSocketIds.forEach((socketId) => {
-            io.to(socketId).emit("smartReplySuggestions", {
-              messageId: message._id,
-              suggestions,
+          if (
+            receiverSocketIds &&
+            suggestions.length > 0
+          ) {
+            receiverSocketIds.forEach((socketId) => {
+              io.to(socketId).emit(
+                "smartReplySuggestions",
+                {
+                  messageId: message._id,
+                  suggestions,
+                }
+              );
             });
-          });
+          }
         }
-      }
 
-      catch (error) {
+      } catch (error) {
         console.error("Send message error:", error);
 
         socket.emit("messageError", {
@@ -210,7 +218,6 @@ const initializeSocket = (server) => {
         });
       }
     });
-
     // typing
     socket.on("typing", async ({ conversationId }) => {
       try {
