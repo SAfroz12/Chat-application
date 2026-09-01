@@ -80,61 +80,59 @@ function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-100 flex items-center justify-center px-4 py-10">
+    <div className="min-h-screen bg-[#05070D] px-4 py-8 flex items-center justify-center">
 
-      <div className="w-full max-w-md">
+      {/* Background glow */}
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+        <div className="absolute -top-40 -left-40 h-96 w-96 rounded-full bg-blue-600/10 blur-3xl" />
+        <div className="absolute -bottom-40 -right-40 h-96 w-96 rounded-full bg-indigo-600/10 blur-3xl" />
+      </div>
+
+      <div className="relative w-full max-w-md">
 
         {/* Brand */}
-        <div className="text-center mb-8">
+        <div className="mb-7 text-center">
 
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 shadow-lg shadow-blue-200 mb-4">
-
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              className="w-6 h-6 text-white"
-            >
-              <path
-                d="M5 6.5C5 5.67 5.67 5 6.5 5h11C18.33 5 19 5.67 19 6.5v7c0 .83-.67 1.5-1.5 1.5H12l-4.5 4V15H6.5C5.67 15 5 14.33 5 13.5v-7Z"
-                fill="currentColor"
-              />
-            </svg>
-
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 text-xl font-bold text-white shadow-lg shadow-blue-600/25">
+            N
           </div>
 
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900">
+          <h1 className="text-3xl font-bold tracking-tight text-white">
             Nexora
           </h1>
 
-          <p className="mt-2 text-sm text-gray-500">
+          <p className="mt-2 text-sm text-slate-400">
             Connect. Chat. Stay in sync.
           </p>
 
         </div>
 
-        {/* Card */}
-        <div className="bg-white border border-gray-200 rounded-2xl shadow-xl shadow-gray-200/60 p-8">
+        {/* Register Card */}
+        <div className="rounded-2xl border border-[#1E293B] bg-[#0B1120] p-7 shadow-2xl shadow-black/40">
 
-          <div className="mb-7">
-            <h2 className="text-2xl font-semibold text-gray-900">
+          {/* Heading */}
+          <div className="mb-6">
+
+            <h2 className="text-2xl font-semibold text-white">
               Create your account
             </h2>
 
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-slate-400">
               Join Nexora and start connecting.
             </p>
+
           </div>
 
           {/* Error */}
           {error && (
-            <div className="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+            <div className="mb-5 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400">
               {error}
             </div>
           )}
 
           {/* Success */}
           {success && (
-            <div className="mb-5 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-600">
+            <div className="mb-5 rounded-xl border border-green-500/20 bg-green-500/10 px-4 py-3 text-sm text-green-400">
               {success}
             </div>
           )}
@@ -147,7 +145,8 @@ function Register() {
 
             {/* Name */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+
+              <label className="mb-2 block text-sm font-medium text-slate-300">
                 Name
               </label>
 
@@ -157,13 +156,15 @@ function Register() {
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="Enter your name"
-                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                className="w-full rounded-xl border border-[#263449] bg-[#080D17] px-4 py-3 text-sm text-white outline-none placeholder:text-slate-600 transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
               />
+
             </div>
 
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+
+              <label className="mb-2 block text-sm font-medium text-slate-300">
                 Email
               </label>
 
@@ -173,13 +174,15 @@ function Register() {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="you@example.com"
-                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                className="w-full rounded-xl border border-[#263449] bg-[#080D17] px-4 py-3 text-sm text-white outline-none placeholder:text-slate-600 transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
               />
+
             </div>
 
             {/* Password */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+
+              <label className="mb-2 block text-sm font-medium text-slate-300">
                 Password
               </label>
 
@@ -189,15 +192,16 @@ function Register() {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="Create a password"
-                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                className="w-full rounded-xl border border-[#263449] bg-[#080D17] px-4 py-3 text-sm text-white outline-none placeholder:text-slate-600 transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
               />
+
             </div>
 
-            {/* Register */}
+            {/* Register Button */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 py-3 text-sm font-semibold text-white shadow-md shadow-blue-200 transition hover:from-blue-700 hover:to-indigo-700 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
+              className="w-full rounded-xl bg-blue-600 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loading
                 ? "Creating account..."
@@ -207,13 +211,13 @@ function Register() {
           </form>
 
           {/* Login */}
-          <p className="text-sm text-center text-gray-500 mt-7">
+          <p className="mt-6 text-center text-sm text-slate-400">
 
             Already have an account?{" "}
 
             <Link
               to="/login"
-              className="font-semibold text-blue-600 hover:text-blue-700"
+              className="font-semibold text-blue-400 transition hover:text-blue-300"
             >
               Sign in
             </Link>
@@ -222,6 +226,10 @@ function Register() {
 
         </div>
 
+        {/* Bottom text */}
+        <p className="mt-5 text-center text-xs text-slate-600">
+          Secure conversations with Nexora
+        </p>
 
       </div>
 
