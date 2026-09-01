@@ -153,7 +153,7 @@ This helps users respond quickly without manually typing a complete response.
               ┌────────────────▼────────────────┐
               │          Express.js             │
               │          Backend API            │
-              └───────────────┬────────────────┘
+              └───────────────┬───────────── ───┘
                               │
              ┌────────────────┼────────────────┐
              │                │                │
@@ -282,14 +282,14 @@ npm install
 cd ../server
 npm install
 4. Configure environment variables
-
 Create the required .env files in the frontend/backend directories.
-
 5. Start the backend
+ >npm run dev
+6. Start the frontend
+>npm run dev
 
-
-
-         Future AI Improvements
+The application will then be available locally.
+## Future AI Improvements
 
         >The Smart Reply system can be extended in future versions with:
 
@@ -299,11 +299,7 @@ Create the required .env files in the frontend/backend directories.
         4)AI message summarization
         5)Conversation summarization
         6)AI-assisted message rewriting
-         npm run dev
-        7). Start the frontend
-           npm run dev
-
-        The application will then be available locally.
+      
 
 
 
